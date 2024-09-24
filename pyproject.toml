@@ -1,0 +1,18 @@
+[tool.poetry]
+authors = ["William Sampaio <56176702+WilliamSampaio@users.noreply.github.com>"]
+description = ""
+name = "scanner"
+readme = "README.md"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+pytesseract = "^0.3.13"
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+blue = "^0.9.1"
+isort = "^5.13.2"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
