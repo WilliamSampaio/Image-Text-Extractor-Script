@@ -27,3 +27,7 @@ To clear the path (remove `txt` and images with `_converted`):
 ```bash
 ./scanner.py /path/to/images --clear
 ```
+
+## Credits
+
+More information about the `textcleaner` script can be found at [this link](http://www.fmwconcepts.com/imagemagick/textcleaner/index.php).
