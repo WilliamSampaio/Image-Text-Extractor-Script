@@ -1,8 +1,12 @@
+#!/usr/bin/env python
+
 import os
 import subprocess
 import sys
 
 import pytesseract
+
+ACCEPTED_EXTENSIONS = ['jpg', 'jpeg', 'png']
 
 
 def read_image(path: str, lang: str = 'por'):
@@ -11,14 +15,23 @@ def read_image(path: str, lang: str = 'por'):
 
 def clear_path(path):
     for file in os.listdir(path):
-        ext = file.split('.')[1]
-        if ext in ['txt', 'converted']:
+        if len(file.split('.')) < 2:
+            continue
+        filename, ext = file.split('.')
+        if 'converted' in filename or ext == 'txt':
             os.remove(os.path.join(path, file))
 
 
 if __name__ == '__main__':
 
     args = sys.argv
+
+    if len(args) == 1:
+        print(
+            'Arguments not passed!\n',
+            '- Usage: scanner.py ./path/to/images [--clear]\n',
+        )
+        sys.exit(1)
 
     PATH = args[1]
 
@@ -29,16 +42,20 @@ if __name__ == '__main__':
 
     for file in sorted(os.listdir(PATH)):
 
-        if len(file.split('.')) == 3:
+        if len(file.split('.')) < 2:
             continue
 
         filename, ext = file.split('.')
 
+        if ext.lower() not in ACCEPTED_EXTENSIONS:
+            continue
+
         if (
-            ext in ['txt', 'converted']
+            'converted' in filename
+            or ext == 'txt'
             or os.path.exists(os.path.join(PATH, filename + '.txt'))
             or os.path.exists(
-                os.path.join(PATH, filename + '.converted.' + ext)
+                os.path.join(PATH, filename + '_converted.' + ext)
             )
         ):
             continue
@@ -51,7 +68,7 @@ if __name__ == '__main__':
                     os.path.join(os.getcwd(), 'textcleaner'),
                     '-e normalize -f 15 -o 5 -S 200',
                     os.path.join(PATH, file),
-                    os.path.join(PATH, filename + '.converted.' + ext),
+                    os.path.join(PATH, filename + '_converted.' + ext),
                 ]
             ),
             shell=True,
@@ -59,5 +76,5 @@ if __name__ == '__main__':
 
         with open(os.path.join(PATH, filename + '.txt'), 'w') as out:
             out.write(
-                read_image(os.path.join(PATH, filename + '.converted.' + ext))
+                read_image(os.path.join(PATH, filename + '_converted.' + ext))
             )
